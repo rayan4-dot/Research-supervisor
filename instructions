@@ -1,0 +1,213 @@
+🧠 1. SYSTEM OVERVIEW
+🎯 Product
+
+AI Research Supervisor for Moroccan Universities
+
+🧩 Core idea
+
+Turn:
+
+vague research idea → structured academic thesis + guided supervision
+
+🏗️ 2. HIGH-LEVEL ARCHITECTURE
+[ nextjs Frontend ]
+        ↓
+[ API Gateway ]
+        ↓
+[ Core Services Layer ]
+   ├── Research Service
+   ├── AI Orchestration Service
+   ├── Review Service
+   └── Project Service
+        ↓
+[ AI Layer ]
+   ├── LLM (Gemini)
+   ├── Prompt Engine
+   └── Optional RAG Engine (LlamaIndex)
+        ↓
+[ Data Layer ]
+   ├── PostgreSQL (Supabase)
+   ├── Vector DB (Qdrant later)
+   └── File Storage (Supabase Storage)
+💻 3. FRONTEND ARCHITECTURE (React / Next.js)
+📁 Structure
+/frontend
+ ├── pages/
+ │    ├── dashboard
+ │    ├── project/[id]
+ │    ├── builder
+ │    └── review
+ ├── components/
+ │    ├── Editor
+ │    ├── OutputPanel
+ │    ├── Sidebar
+ │    └── Cards
+ ├── services/
+ │    └── api.ts
+ ├── hooks/
+ └── utils/
+🧠 Frontend concept
+Dashboard
+list of research projects
+create new project
+Project workspace (core UI)
+
+Tabs:
+
+🧩 Idea Builder
+📚 Structure
+🧪 Methodology
+📝 Supervisor Review
+UX principle:
+
+“Google Docs for research + AI side panel”
+
+⚙️ 4. BACKEND ARCHITECTURE (keep supabase backend , no python)
+📁 Structure
+/backend
+ ├── main
+ ├── api/
+ │    ├── routes/
+ │    │     ├── research
+ │    │     ├── generation
+ │    │     ├── review
+ │    │     └── projects
+ │
+ ├── services/
+ │    ├── ai_service 
+ │    ├── research_service 
+ │    ├── review_service 
+ │
+ ├── core/
+ │    ├── prompts 
+ │    ├── config 
+ │
+ ├── models/
+ │    ├── user 
+ │    ├── project 
+ │    └── output 
+ │
+ ├── db/
+ │    ├── session 
+ │    └── base 
+🧠 5. AI LAYER DESIGN (VERY IMPORTANT)
+
+You do NOT want chaos prompts.
+
+You build a Prompt Engine (modular system):
+
+📦 Prompt Types
+1. Research Builder Prompt
+input: topic
+output: structured academic plan
+2. Thesis Structuring Prompt
+generates chapter architecture
+3. Methodology Prompt
+suggests research design
+4. Supervisor Critique Prompt
+evaluates user text like an academic reviewer
+🧠 Prompt Engine pattern
+class PromptEngine:
+    def build_research_prompt(topic):
+        return f"..."
+
+    def build_methodology_prompt(topic, type):
+        return f"..."
+🧾 6. DATABASE ARCHITECTURE (PostgreSQL)
+users
+id (uuid)
+email
+password_hash
+created_at
+projects
+id
+user_id
+title
+research_topic
+status (draft / in_progress / completed)
+created_at
+research_outputs
+id
+project_id
+type (idea | structure | methodology | review)
+content (jsonb)
+created_at
+optional (later)
+feedback_history
+citations
+uploaded_documents
+🧠 7. AI FLOW (CORE LOGIC)
+Flow 1: Idea → Structure
+User input → AI → structured research plan → save DB → UI display
+Flow 2: Methodology
+User selects topic + type → AI → methodology suggestion → store → display
+Flow 3: Supervisor Review
+User text → AI critique prompt → structured feedback:
+   - strengths
+   - weaknesses
+   - improvements
+🔗 8. API DESIGN
+Core endpoints
+Research
+POST /research/create
+GET  /research/{id}
+AI Generation
+POST /ai/idea
+POST /ai/structure
+POST /ai/methodology
+Review
+POST /ai/review
+🧠 9. OPTIONAL ADVANCED LAYER (DO NOT BUILD YET)
+
+Later you can add:
+
+📚 RAG system
+Moroccan theses PDFs
+academic papers
+embeddings via Qdrant
+🧾 Citation engine
+auto-suggest sources
+📊 analytics
+progress tracking
+🚀 10. DEPLOYMENT ARCHITECTURE
+MVP deployment
+Frontend
+Vercel
+
+DB
+Supabase PostgreSQL
+AI
+gemini 
+🔥 11. SYSTEM DESIGN PRINCIPLE (IMPORTANT)
+
+This product is:
+
+NOT a chatbot
+NOT a writing tool
+NOT a note app
+
+It is:
+
+👉 “Academic reasoning + structure engine”
+🧭 12. BUILD STRATEGY (REALISTIC)
+Phase 1 (MVP)
+Idea builder
+Structure generator
+Methodology assistant
+Review system
+Phase 2
+PDF upload
+RAG knowledge base
+citations
+Phase 3
+collaboration
+supervisor dashboard
+university integration
+⚠️ 13. REAL SUCCESS FACTOR (most important part)
+
+This will only work if:
+
+outputs feel academic, not generic AI text
+structure is strict and consistent
+UX is simple like Notion, not complex like LMS
+responses are Morocco-university aligned
